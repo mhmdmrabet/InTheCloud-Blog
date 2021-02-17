@@ -4,3 +4,31 @@
 @import "media-queries";
 @import "utils";
 @import "base";
+
+.container {
+  min-height: 100vh;
+  display: grid;
+  grid:
+    "header" auto
+    "content" 1fr
+    "footer" auto /
+    auto;
+}
+
+header {
+  grid-area: header;
+  background-color: cornflowerblue;
+  padding: 20px;
+}
+
+.content {
+  grid-area: content;
+  //   background-color: cornsilk;
+  padding: 20px;
+}
+
+footer {
+  grid-area: footer;
+  //   background-color: cornflowerblue;
+  padding: 20px;
+}
