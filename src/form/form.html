@@ -1,13 +1,55 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>In The Cloud</title>
-</head>
-<body>
-    <a href="./index.html">Accueil</a>
-    <img src="./assets/images/oman.jpg" alt="oman-palmier" width="300">
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>In the Cloud</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+
+    <!-- CONTAINER -->
+    <div class="container">
+
+        <!-- HEADER -->
+      <header>
+        <a class="header-brand" href="./index.html"><b>In The cloud</b></a>
+        <ul>
+          <li><a class="header-nav" href="./index.html">Accueil</a></li>
+          <li><a class="active header-nav" href="./form.html">Créer un article</a></li>
+        </ul>
+      </header>
+
+      <!-- CONTENT -->
+      <div class="content">
+          <form action="">
+              <h2 class="title-underline">Ajouter un article</h2>
+              <div class="form-group">
+                  <label for="">Auteur</label>
+                  <input type="text" name="author" id="">
+              </div>
+              <div class="form-group">
+                <label for="">Category</label>
+                <input type="text" name="category" id="">
+            </div>
+            <div class="form-group">
+                <label for="">Article</label>
+                <textarea name="content"></textarea>
+            </div>
+            <div class="form-btn-container">
+                <button class="btn btn-secondary">Annuler</button>
+                <button class="btn btn-primary">Sauvegarder</button>
+
+          </form>
+      </div>
+
+      <!-- FOOTER -->
+    </div>
+    <footer>© In The Cloud</footer>
+  </body>
 </html>
