@@ -32,6 +32,33 @@ const makeArticleInDOM = (articles) => {
     // injecter avant le clone, on connait appendChild qui insère un enfant à la fin d'un parent. .before insère notre enfant à coté et juste avant un élement cible
     articleContainerElement.append(clone);
   });
+
+  /* Parcourir tout les boutons dans la div article-containe */
+  const deleteButtons = articleContainerElement.querySelectorAll(".btn-danger");
+
+  // Ajout d'eventListener
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      try {
+        const target = event.target;
+        const articleId = target.dataset.id;
+
+        // Suppresion de l'article en fonction de l'id dans la DB
+        const response = await fetch(
+          `https://restapi.fr/api/articles/${articleId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        const body = await response.json();
+        console.log(body);
+        // Recharger la page article
+        fetchArticles();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  });
 };
 
 // Récupération de la liste des articles
