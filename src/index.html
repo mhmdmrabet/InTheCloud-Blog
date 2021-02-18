@@ -20,7 +20,47 @@
           <li><a class="header-nav" href="./form.html">Créer un article</a></li>
         </ul>
       </header>
-      <div class="content"></div>
+
+      <div class="content">
+        <!-- LISTE D'ARTICLES -->
+        <div class="articles-container">
+
+          <!-- DEBUT ARTICLE -->
+          <!-- <div class="article">
+            <img src="https://randomuser.me/api/portraits/lego/3.jpg" alt="auteur" >
+            <h2>Titre de l'article</h2>
+            <p class="article-author">Mohamed</p>
+            <p class="article-content">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente architecto ad omnis rem voluptas molestiae amet ipsa. Labore dolorum et eius non aliquam illum! Nesciunt assumenda accusantium odit repellendus aliquam!
+              Odit, nihil ipsum. Id, quod alias. Maiores cum cumque assumenda tempore laudantium porro nulla corrupti totam impedit doloribus, eum, illo eaque esse omnis magnam delectus officia vel laborum hic expedita.
+            </p>
+            <div class="article-actions">
+              <button class="btn btn-danger">Supprimer</button>
+              <button class="btn btn-primary">Modifier</button>
+            </div>
+          </div> -->
+          <!-- FIN D'ARTICLE -->
+
+        </div>
+
+      </div>
+
+      <template id="article-template">
+        <div class="article">
+          <img class="article-img" src="https://randomuser.me/api/portraits/lego/3.jpg" alt="auteur" >
+          <h2 class="article-title"></h2>
+          <p class="article-author"></p>
+          <p class="article-content">
+
+          </p>
+          <div class="article-actions">
+            <button class="btn btn-danger" data-id="">Supprimer</button>
+            <button class="btn btn-primary">Modifier</button>
+          </div>
+        </div>
+      </template>
+
+
       <footer>© In The Cloud</footer>
     </div>
   </body>
