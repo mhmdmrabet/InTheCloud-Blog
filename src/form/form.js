@@ -31,10 +31,8 @@ form.addEventListener("submit", async (event) => {
           "Content-Type": "application/json",
         },
       });
-
-      // Récupérer le body de la response
-      const body = await response.json();
-      console.log(body);
+      /* Rediriger vers la HomePage */
+      document.location.href = "./index.html";
     } catch (error) {
       console.error(error);
     }
