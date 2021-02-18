@@ -9,7 +9,7 @@ const errorElement = document.querySelector("#errors");
 // Cibler le formulaire
 const form = document.querySelector("form");
 // Ajouter un écouteur au submit du form
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   // Bloquer la soumission du form par défaut
   event.preventDefault();
 
@@ -20,7 +20,24 @@ form.addEventListener("submit", (event) => {
 
   // Gérer les erreurs
   if (formIsValid(article)) {
-    const json = JSON.stringify(article);
+    try {
+      const json = JSON.stringify(article);
+
+      // Récupérer les données grâce à l'API "fetch"
+      const response = await fetch("https://restapi.fr/api/articles", {
+        method: "POST",
+        body: json,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Récupérer le body de la response
+      const body = await response.json();
+      console.log(body);
+    } catch (error) {
+      console.error(error);
+    }
   }
 });
 
@@ -37,7 +54,9 @@ const formIsValid = (article) => {
       errorHTML += `<li>${error}</li>`;
     });
     errorElement.innerHTML = errorHTML;
+    return false;
   } else {
     errorElement.innerHTML = "";
+    return true;
   }
 };
