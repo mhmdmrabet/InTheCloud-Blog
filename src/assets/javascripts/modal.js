@@ -1,16 +1,13 @@
 const body = document.querySelector("body");
 let calc;
 let modal;
+let cancel;
+let confirm;
 
 // Creer un calc
 const createCalc = () => {
   calc = document.createElement("div");
   calc.classList.add("calc");
-
-  // Ajout d'un listener pour enlever la modal
-  calc.addEventListener("click", () => {
-    calc.remove();
-  });
 };
 
 // Creer un modal
@@ -20,12 +17,17 @@ const createModal = (question) => {
   modal.innerHTML = `<p>${question}</p>`;
 
   // Ajout de boutton cancel et valider
-  const cancel = document.createElement("button");
+  cancel = document.createElement("button");
   cancel.innerText = "Annuler";
   cancel.classList.add("btn", "btn-secondary");
-  const confirm = document.createElement("button");
+  confirm = document.createElement("button");
   confirm.innerText = "Confirmer";
   confirm.classList.add("btn", "btn-primary");
+
+  // Stopper la propagation de l'event
+  modal.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
 
   //
   modal.append(cancel, confirm);
@@ -41,4 +43,24 @@ export function openModal(question) {
 
   // Ajouter le calc dans le body
   body.append(calc);
+
+  //   Création d'un promise
+  return new Promise((resolve, reject) => {
+    // Ajout d'un listener pour enlever la modal
+    // Permet de resolve la promise
+    calc.addEventListener("click", () => {
+      resolve(false);
+      calc.remove();
+    });
+
+    // Ajout d'un event listener sur les boutons cancel et confirm
+    cancel.addEventListener("click", () => {
+      resolve(false);
+      calc.remove();
+    });
+    confirm.addEventListener("click", () => {
+      resolve(true);
+      calc.remove();
+    });
+  });
 }

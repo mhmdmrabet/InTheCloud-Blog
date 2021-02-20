@@ -109,27 +109,27 @@ const makeArticleInDOM = () => {
   deleteButtons.forEach((button) => {
     button.addEventListener("click", async (event) => {
       // Mettre en place une modale pour confirmer la suppression
-      openModal("Êtes-vous sûr de supprimer l'article ?");
+      const result = await openModal("Êtes-vous sûr de supprimer l'article ?");
 
-      // if (result) {
-      //   try {
-      //     const target = event.target;
-      //     const articleId = target.dataset.id;
+      if (result) {
+        try {
+          const target = event.target;
+          const articleId = target.dataset.id;
 
-      //     // Suppresion de l'article en fonction de l'id dans la DB
-      //     const response = await fetch(
-      //       `https://restapi.fr/api/articles/${articleId}`,
-      //       {
-      //         method: "DELETE",
-      //       }
-      //     );
-      //     const body = await response.json();
-      //     // Recharger la page article
-      //     fetchArticles();
-      //   } catch (error) {
-      //     console.error(error);
-      //   }
-      // }
+          // Suppresion de l'article en fonction de l'id dans la DB
+          const response = await fetch(
+            `https://restapi.fr/api/articles/${articleId}`,
+            {
+              method: "DELETE",
+            }
+          );
+          const body = await response.json();
+          // Recharger la page article
+          fetchArticles();
+        } catch (error) {
+          console.error(error);
+        }
+      }
     });
   });
 };

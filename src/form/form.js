@@ -1,5 +1,6 @@
 import "../assets/styles/styles.scss";
 import "./form.scss";
+import { openModal } from "./../assets/javascripts/modal";
 
 // Récupération de l'articleId dans le paramURL
 let articleId = null;
@@ -59,9 +60,13 @@ const initForm = async () => {
 initForm();
 
 // Ajout d'écouteur d'evt sur le bouton annulation
-btnCancel.addEventListener("click", () => {
-  /* Rediriger vers la HomePage */
-  location.assign("/index.html");
+// Demander une confirmation d'annulation
+btnCancel.addEventListener("click", async () => {
+  const result = await openModal("Etes-vous sur d'annuler ?");
+  if (result) {
+    /* Rediriger vers la HomePage */
+    location.assign("/index.html");
+  }
 });
 
 // Ajouter un écouteur au submit du form
