@@ -1,5 +1,6 @@
 import "./assets/styles/styles.scss";
 import "./index.scss";
+import { openModal } from "./assets/javascripts/modal";
 
 // Cibler la div où insérer l'article
 const articleContainerElement = document.querySelector(".articles-container");
@@ -107,24 +108,28 @@ const makeArticleInDOM = () => {
   // Ajout d'eventListener au btn delete
   deleteButtons.forEach((button) => {
     button.addEventListener("click", async (event) => {
-      try {
-        const target = event.target;
-        const articleId = target.dataset.id;
+      // Mettre en place une modale pour confirmer la suppression
+      openModal("Êtes-vous sûr de supprimer l'article ?");
 
-        // Suppresion de l'article en fonction de l'id dans la DB
-        const response = await fetch(
-          `https://restapi.fr/api/articles/${articleId}`,
-          {
-            method: "DELETE",
-          }
-        );
-        const body = await response.json();
-        console.log(body);
-        // Recharger la page article
-        fetchArticles();
-      } catch (error) {
-        console.error(error);
-      }
+      // if (result) {
+      //   try {
+      //     const target = event.target;
+      //     const articleId = target.dataset.id;
+
+      //     // Suppresion de l'article en fonction de l'id dans la DB
+      //     const response = await fetch(
+      //       `https://restapi.fr/api/articles/${articleId}`,
+      //       {
+      //         method: "DELETE",
+      //       }
+      //     );
+      //     const body = await response.json();
+      //     // Recharger la page article
+      //     fetchArticles();
+      //   } catch (error) {
+      //     console.error(error);
+      //   }
+      // }
     });
   });
 };
@@ -137,7 +142,6 @@ const displayMenuCategories = (categoriesArray) => {
     const li = document.createElement("li");
     li.innerHTML = `${categoryElement[0]} (<strong>${categoryElement[1]}</strong>)`;
 
-    console.log(categoryElement[0]);
     // Vérifie si la catégorie selectionné est le filtre qu'on lui a appliquer
     // On lui rajoute une classe active
     if (categoryElement[0] === filter) {
