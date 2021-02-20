@@ -1,6 +1,9 @@
 import "../assets/styles/styles.scss";
 import "./form.scss";
 
+// Récupération de l'articleId dans le paramURL
+let articleId = null;
+
 // Récupérer Les erreurs du formulaire et les mettre dans un array
 let errors = [];
 
@@ -12,6 +15,48 @@ const btnCancel = document.querySelector(".btn-secondary");
 
 // Cibler le formulaire
 const form = document.querySelector("form");
+
+/*  */
+const fillForm = (article) => {
+  // Récupération une référence de nos input
+  const author = document.querySelector("input[name='author']");
+  const category = document.querySelector("input[name='category']");
+  const title = document.querySelector("input[name='title']");
+  const content = document.querySelector("textarea");
+
+  author.value = article.author || "";
+  category.value = article.category || "";
+  title.value = article.title || "";
+  content.value = article.content || "";
+};
+
+/* Vérifier si on récupére un articleId dans le param */
+const initForm = async () => {
+  // Récupération du param dans l'url
+  const params = new URL(location.href);
+  articleId = params.searchParams.get("articleId");
+
+  // Vérifier qu'on a l'id dans le param
+  if (articleId) {
+    // Récupérer l'article
+    const response = await fetch(
+      `https://restapi.fr/api/articles/${articleId}`
+    );
+    // Si le fetch foncitonne bien, on récupere les data en JSON
+    if (response.status < 300) {
+      // Récupérer le contenu de la réponse
+      const article = await response.json();
+
+      // Remplir les champs avec les data
+      fillForm(article);
+    }
+  }
+
+  //
+};
+
+// Invocation de la méthode
+initForm();
 
 // Ajout d'écouteur d'evt sur le bouton annulation
 btnCancel.addEventListener("click", () => {
@@ -34,16 +79,31 @@ form.addEventListener("submit", async (event) => {
     try {
       const json = JSON.stringify(article);
 
-      // Récupérer les données grâce à l'API "fetch"
-      const response = await fetch("https://restapi.fr/api/articles", {
-        method: "POST",
-        body: json,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      // SI articleID est définit on envoi la requete en PATCH
+      // SINON en POST
+      let response = null;
+      console.log(articleId);
+      if (articleId) {
+        // Modifier les données grâce à l'API "fetch"
+        response = await fetch(`https://restapi.fr/api/articles/${articleId}`, {
+          method: "PATCH",
+          body: json,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } else {
+        // Envoyer les données grâce à l'API "fetch"
+        response = await fetch("https://restapi.fr/api/articles", {
+          method: "POST",
+          body: json,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
 
-      if (response.status < 299) {
+      if (response.status < 300) {
         /* Rediriger vers la HomePage */
         location.assign("/index.html");
       }

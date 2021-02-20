@@ -38,17 +38,39 @@ const makeArticleInDOM = (articles) => {
     const p = clone.querySelector(".article-content");
     p.textContent = article.content;
 
-    const btn = clone.querySelector(".article-actions .btn-danger");
-    btn.setAttribute("data-id", article._id);
+    // Ajout d'un boutton supp avec l'id de l'article en attribut
+    const btnDelete = clone.querySelector(".article-actions .btn-danger");
+    btnDelete.setAttribute("data-id", article._id);
+
+    // AJout d'un btn modif avec l'id de l'article en attribut
+    const btnEdit = clone.querySelector(".article-actions .btn-primary");
+    btnEdit.setAttribute("data-id", article._id);
 
     // injecter avant le clone, on connait appendChild qui insère un enfant à la fin d'un parent. .before insère notre enfant à coté et juste avant un élement cible
     articleContainerElement.append(clone);
   });
 
+  // Cibler TOUT les btn de modification
+  const editButtons = articleContainerElement.querySelectorAll(".btn-primary");
+
+  // Parcourir tout les btn de modifications
+  editButtons.forEach((btn) => {
+    // Ajout d'event listener sur les btn de modifications
+    btn.addEventListener("click", (event) => {
+      // Récupération de la target de l'envent
+      const target = event.target;
+      // Récupérerl'id de larticle via target.dataset
+      const articleId = target.dataset.id;
+
+      // Rediriger vers la page de modif d'article en récupérant l'id en parametre
+      location.assign(`/form.html?articleId=${articleId}`);
+    });
+  });
+
   /* Parcourir tout les boutons dans la div article-containe */
   const deleteButtons = articleContainerElement.querySelectorAll(".btn-danger");
 
-  // Ajout d'eventListener
+  // Ajout d'eventListener au btn delete
   deleteButtons.forEach((button) => {
     button.addEventListener("click", async (event) => {
       try {
