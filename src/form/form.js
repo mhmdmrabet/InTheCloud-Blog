@@ -4,10 +4,21 @@ import "./form.scss";
 // Récupérer Les erreurs du formulaire et les mettre dans un array
 let errors = [];
 
+// Cibler la div error
 const errorElement = document.querySelector("#errors");
+
+// Cibler le bouton d'annulation dans le formulaire
+const btnCancel = document.querySelector(".btn-secondary");
 
 // Cibler le formulaire
 const form = document.querySelector("form");
+
+// Ajout d'écouteur d'evt sur le bouton annulation
+btnCancel.addEventListener("click", () => {
+  /* Rediriger vers la HomePage */
+  location.assign("/index.html");
+});
+
 // Ajouter un écouteur au submit du form
 form.addEventListener("submit", async (event) => {
   // Bloquer la soumission du form par défaut
@@ -31,8 +42,11 @@ form.addEventListener("submit", async (event) => {
           "Content-Type": "application/json",
         },
       });
-      /* Rediriger vers la HomePage */
-      document.location.href = "./index.html";
+
+      if (response.status < 299) {
+        /* Rediriger vers la HomePage */
+        location.assign("/index.html");
+      }
     } catch (error) {
       console.error(error);
     }
@@ -40,6 +54,8 @@ form.addEventListener("submit", async (event) => {
 });
 
 const formIsValid = (article) => {
+  // Ré iniatiliser le tableau d'erreur pour partir d'un array vide
+  errors = [];
   if (
     !article.author ||
     !article.category ||

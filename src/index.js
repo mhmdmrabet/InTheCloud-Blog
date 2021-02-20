@@ -17,11 +17,23 @@ const makeArticleInDOM = (articles) => {
     // const img = clone.querySelector(".article-img");
     // img.setAttribute("src", article.img);
 
+    //  Récupération de la date de création et mise en format
+    const articleCreatedAt = new Date(article.createdAt).toLocaleDateString(
+      "fr-FR",
+      {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }
+    );
+
     const h2 = clone.querySelector(".article-title");
-    h2.textContent = `${article.title} - ${article.category}`;
+
+    h2.textContent = article.title;
 
     const paragraphAuthor = clone.querySelector(".article-author");
-    paragraphAuthor.textContent = article.author;
+    paragraphAuthor.textContent = `${article.author} - ${articleCreatedAt}`;
 
     const p = clone.querySelector(".article-content");
     p.textContent = article.content;
