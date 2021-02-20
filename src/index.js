@@ -7,11 +7,25 @@ const articleContainerElement = document.querySelector(".articles-container");
 //  Récupérer la référence du menu categories
 const categoriesContainerElement = document.querySelector(".categories");
 
+// Cibler le select pour le tri par date
+const selectELement = document.querySelector("select");
+
 // Filtre par catégory
 let filter;
 
 // Initialisation de la variables articles
 let articles;
+
+// Par défaut pour le tri par date
+let sortBy = "desc";
+
+// Ecouter le changement de valeur du selectElement
+selectELement.addEventListener("change", () => {
+  // changer la valeur du sortBy par rapport à la value récupérer dans le select
+  sortBy = selectELement.value;
+  // Invocation de la méthode pour effectuer le tri par rapport à ce que l'on récupére dans le select
+  fetchArticles();
+});
 
 const makeArticleInDOM = () => {
   articleContainerElement.innerHTML = "";
@@ -121,7 +135,14 @@ const displayMenuCategories = (categoriesArray) => {
   const liElements = categoriesArray.map((categoryElement) => {
     // Création d'un contenu HTML
     const li = document.createElement("li");
-    li.innerHTML = `<li>${categoryElement[0]} (<strong>${categoryElement[1]}</strong>)</li>`;
+    li.innerHTML = `${categoryElement[0]} (<strong>${categoryElement[1]}</strong>)`;
+
+    console.log(categoryElement[0]);
+    // Vérifie si la catégorie selectionné est le filtre qu'on lui a appliquer
+    // On lui rajoute une classe active
+    if (categoryElement[0] === filter) {
+      li.classList.add("active");
+    }
 
     // Ajout d'un evt listener
     // Au click on va modifier la valeur de filter avec la valeur de la catégorie cliquer
@@ -198,7 +219,10 @@ const createMenuCategories = () => {
 const fetchArticles = async () => {
   try {
     // Envoi de la requete
-    const response = await fetch("https://restapi.fr/api/articles");
+    const response = await fetch(
+      // Récupération du filtre par date que je passe dans le param de la requete
+      `https://restapi.fr/api/articles?sort=createdAt:${sortBy}`
+    );
 
     // Récupération du body de la réponse
     articles = await response.json();
