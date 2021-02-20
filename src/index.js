@@ -7,51 +7,68 @@ const articleContainerElement = document.querySelector(".articles-container");
 //  Récupérer la référence du menu categories
 const categoriesContainerElement = document.querySelector(".categories");
 
-const makeArticleInDOM = (articles) => {
+// Filtre par catégory
+let filter;
+
+// Initialisation de la variables articles
+let articles;
+
+const makeArticleInDOM = () => {
   articleContainerElement.innerHTML = "";
-  const articlesDOM = articles.map((article) => {
-    // je cible mon template
-    const template = document.querySelector("#article-template");
-    // je clone son contenu
-    // const clone = document.importNode(template.content, true);
-    const clone = template.content.cloneNode(true);
-
-    // je configure le clone
-    // const img = clone.querySelector(".article-img");
-    // img.setAttribute("src", article.img);
-
-    //  Récupération de la date de création et mise en format
-    const articleCreatedAt = new Date(article.createdAt).toLocaleDateString(
-      "fr-FR",
-      {
-        weekday: "long",
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
+  // Filtrer les articles par rapport à notre filtre
+  const articlesDOM = articles
+    .filter((article) => {
+      // Vérifier s'il la varible filtre est initialiser
+      if (filter) {
+        // Retourner l'article filtrer
+        return article.category === filter;
+      } else {
+        return true;
       }
-    );
+    })
+    .map((article) => {
+      // je cible mon template
+      const template = document.querySelector("#article-template");
+      // je clone son contenu
+      // const clone = document.importNode(template.content, true);
+      const clone = template.content.cloneNode(true);
 
-    const h2 = clone.querySelector(".article-title");
+      // je configure le clone
+      // const img = clone.querySelector(".article-img");
+      // img.setAttribute("src", article.img);
 
-    h2.textContent = article.title;
+      //  Récupération de la date de création et mise en format
+      const articleCreatedAt = new Date(article.createdAt).toLocaleDateString(
+        "fr-FR",
+        {
+          weekday: "long",
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        }
+      );
 
-    const paragraphAuthor = clone.querySelector(".article-author");
-    paragraphAuthor.textContent = `${article.author} - ${articleCreatedAt}`;
+      const h2 = clone.querySelector(".article-title");
 
-    const p = clone.querySelector(".article-content");
-    p.textContent = article.content;
+      h2.textContent = article.title;
 
-    // Ajout d'un boutton supp avec l'id de l'article en attribut
-    const btnDelete = clone.querySelector(".article-actions .btn-danger");
-    btnDelete.setAttribute("data-id", article._id);
+      const paragraphAuthor = clone.querySelector(".article-author");
+      paragraphAuthor.textContent = `${article.author} - ${articleCreatedAt}`;
 
-    // AJout d'un btn modif avec l'id de l'article en attribut
-    const btnEdit = clone.querySelector(".article-actions .btn-primary");
-    btnEdit.setAttribute("data-id", article._id);
+      const p = clone.querySelector(".article-content");
+      p.textContent = article.content;
 
-    // injecter avant le clone, on connait appendChild qui insère un enfant à la fin d'un parent. .before insère notre enfant à coté et juste avant un élement cible
-    articleContainerElement.append(clone);
-  });
+      // Ajout d'un boutton supp avec l'id de l'article en attribut
+      const btnDelete = clone.querySelector(".article-actions .btn-danger");
+      btnDelete.setAttribute("data-id", article._id);
+
+      // AJout d'un btn modif avec l'id de l'article en attribut
+      const btnEdit = clone.querySelector(".article-actions .btn-primary");
+      btnEdit.setAttribute("data-id", article._id);
+
+      // injecter avant le clone, on connait appendChild qui insère un enfant à la fin d'un parent. .before insère notre enfant à coté et juste avant un élement cible
+      articleContainerElement.append(clone);
+    });
 
   // Cibler TOUT les btn de modification
   const editButtons = articleContainerElement.querySelectorAll(".btn-primary");
@@ -105,6 +122,33 @@ const displayMenuCategories = (categoriesArray) => {
     // Création d'un contenu HTML
     const li = document.createElement("li");
     li.innerHTML = `<li>${categoryElement[0]} (<strong>${categoryElement[1]}</strong>)</li>`;
+
+    // Ajout d'un evt listener
+    // Au click on va modifier la valeur de filter avec la valeur de la catégorie cliquer
+    li.addEventListener("click", () => {
+      // Donner la possibilité de retirer le filtre
+      // si le filtre a déjà été sélectionner
+      // SINON on filtre avec notre filtre de catégorie
+      if (filter === categoryElement[0]) {
+        // On réassigne le filtre à une valeur null
+        filter = null;
+        // Retire les class active
+        li.classList.remove("active");
+        // On rappel la fonction pour créer la liste d'articles
+        makeArticleInDOM();
+      } else {
+        filter = categoryElement[0];
+        // Vider toutes les classe "actives" de tout les li présent dans liElements
+        liElements.forEach((element) => {
+          element.classList.remove("active");
+        });
+        // Ajouter une classe active lorsqu'on clique sur la catégorie
+        li.classList.add("active");
+        // On re créer la liste des articles filtrer
+        makeArticleInDOM();
+      }
+    });
+
     // Retourne un nouvel elmt HTML
     return li;
   });
@@ -113,7 +157,7 @@ const displayMenuCategories = (categoriesArray) => {
 };
 
 // Transformer la liste d'articles pour créer le menu catégories
-const createMenuCategories = (articles) => {
+const createMenuCategories = () => {
   // Regrouper par catégories
   // Pour chaque nouvelle catégories on va créer l'insérer dans le menu
   // Si la catégorie est déjà présente , on va incrémenter le nombre
@@ -138,10 +182,13 @@ const createMenuCategories = (articles) => {
 
   // A partir de cet objet, on va créer un tableau
   // On Map sur ce tableau pour que chaque valeur soit un tableau (nomDeLaCategorie, nombre)
-  const categoriesArray = Object.keys(categories).map((category) => {
-    // Récupére le nom de chaque catégorie avec la valeur de CETTE categorie contenu dans l'objet accumulateur
-    return [category, categories[category]];
-  });
+  const categoriesArray = Object.keys(categories)
+    .map((category) => {
+      // Récupére le nom de chaque catégorie avec la valeur de CETTE categorie contenu dans l'objet accumulateur
+      return [category, categories[category]];
+    })
+    // Création du tri par ordre alphabétique
+    .sort((c1, c2) => c1[0].localeCompare(c2[0]));
 
   // Invocation de la fonction pour afficher la liste des catégories
   displayMenuCategories(categoriesArray);
@@ -154,13 +201,13 @@ const fetchArticles = async () => {
     const response = await fetch("https://restapi.fr/api/articles");
 
     // Récupération du body de la réponse
-    const articles = await response.json();
+    articles = await response.json();
 
     // Création du menu de catégories
-    createMenuCategories(articles);
+    createMenuCategories();
 
     // Creation d'un article dans le DOM
-    makeArticleInDOM(articles);
+    makeArticleInDOM();
   } catch (error) {
     console.error("error : ", error);
   }
