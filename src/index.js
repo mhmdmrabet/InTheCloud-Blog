@@ -4,6 +4,9 @@ import "./index.scss";
 // Cibler la div où insérer l'article
 const articleContainerElement = document.querySelector(".articles-container");
 
+//  Récupérer la référence du menu categories
+const categoriesContainerElement = document.querySelector(".categories");
+
 const makeArticleInDOM = (articles) => {
   articleContainerElement.innerHTML = "";
   const articlesDOM = articles.map((article) => {
@@ -95,6 +98,55 @@ const makeArticleInDOM = (articles) => {
   });
 };
 
+// Affiche le menu avec les catégories
+const displayMenuCategories = (categoriesArray) => {
+  //
+  const liElements = categoriesArray.map((categoryElement) => {
+    // Création d'un contenu HTML
+    const li = document.createElement("li");
+    li.innerHTML = `<li>${categoryElement[0]} (<strong>${categoryElement[1]}</strong>)</li>`;
+    // Retourne un nouvel elmt HTML
+    return li;
+  });
+  categoriesContainerElement.innerHTML = "";
+  categoriesContainerElement.append(...liElements);
+};
+
+// Transformer la liste d'articles pour créer le menu catégories
+const createMenuCategories = (articles) => {
+  // Regrouper par catégories
+  // Pour chaque nouvelle catégories on va créer l'insérer dans le menu
+  // Si la catégorie est déjà présente , on va incrémenter le nombre
+  //  Itérer Sur le tableau
+
+  // Creation d'un objet avec la méthode "réduce"
+  // L'accumulateur c'est un objet vide
+  // A chaque itération on récupère 1 article de notres liste d'articles
+  const categories = articles.reduce((accumulateur, article) => {
+    // Dans l'objet accumulateur on va définir une clé
+    // On va lui attribuer une valeur
+    // Soit la valeur est déjà présente dans liste catégorie de notre menu et dans ce cas là on va incrémenter la valeur dans notre objet
+    // Soit la valeur n'est pas présente et dans cas là on va assigner la valeur de 1
+    if (accumulateur[article.category]) {
+      accumulateur[article.category]++;
+    } else {
+      accumulateur[article.category] = 1;
+    }
+    // Dans un reduce il faut TOUJOURS retourne l'accumulateur
+    return accumulateur;
+  }, {});
+
+  // A partir de cet objet, on va créer un tableau
+  // On Map sur ce tableau pour que chaque valeur soit un tableau (nomDeLaCategorie, nombre)
+  const categoriesArray = Object.keys(categories).map((category) => {
+    // Récupére le nom de chaque catégorie avec la valeur de CETTE categorie contenu dans l'objet accumulateur
+    return [category, categories[category]];
+  });
+
+  // Invocation de la fonction pour afficher la liste des catégories
+  displayMenuCategories(categoriesArray);
+};
+
 // Récupération de la liste des articles
 const fetchArticles = async () => {
   try {
@@ -103,6 +155,9 @@ const fetchArticles = async () => {
 
     // Récupération du body de la réponse
     const articles = await response.json();
+
+    // Création du menu de catégories
+    createMenuCategories(articles);
 
     // Creation d'un article dans le DOM
     makeArticleInDOM(articles);
